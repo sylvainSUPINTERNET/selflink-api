@@ -6,6 +6,7 @@ using MongoDB.Driver.Linq;
 using Selflink_api.Db;
 using Selflink_api.Db.Models;
 using Selflink_api.Dto;
+using Selflink_api.Services;
 
 namespace Selflink_api.Controllers;
 
@@ -18,15 +19,20 @@ public class LinkController : ControllerBase
 
     private readonly SelflinkDbContext db;
 
-    public LinkController(ILogger<LinkController> logger, SelflinkDbContext db)
+    private readonly ILinkService linkService;
+
+    public LinkController(ILogger<LinkController> logger, SelflinkDbContext db, ILinkService linkService)
     {
         _logger = logger;
         this.db = db;
+        this.linkService = linkService;
     }
 
     [HttpGet(Name = "CreateLinkAsync")]
     public async Task<ActionResult<Link>> SaveAsync()
     {
+        linkService.SaveLink();
+        
         Link link = new Link { Name = "linke" };
         db.Links.Add(link);
         await db.SaveChangesAsync();

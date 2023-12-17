@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Selflink_api.Db;
+using Selflink_api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,9 @@ builder.Services.AddDbContext<SelflinkDbContext>(options => {
 
     options.UseMongoDB(connStr!, dbName!);
 });
+
+
+builder.Services.AddScoped<ILinkService, LinkService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
