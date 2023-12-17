@@ -1,0 +1,6 @@
+@Selflink_api_HostAddress = http://localhost:5141
+
+GET {{Selflink_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
