@@ -90,7 +90,7 @@ public class LinkService : ILinkService
                     Type = "hosted_confirmation",
                     HostedConfirmation = {
                         CustomMessage = "Thanks for your order!"
-                    },
+                    },  
                 }
             };
 
