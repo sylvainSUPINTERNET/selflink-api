@@ -85,9 +85,9 @@ public class LinkService : ILinkService
                 AllowPromotionCodes = true,
                 AutomaticTax = {
                     Enabled = true,
-                }
+                },
                 AfterCompletion = {
-                    Type = 'hosted_confirmation',
+                    Type = "hosted_confirmation",
                     HostedConfirmation = {
                         CustomMessage = "Thanks for your order!"
                     },
