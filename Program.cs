@@ -1,8 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Selflink_api.Db;
 using Selflink_api.Services;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
+
+StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY") ?? throw new Exception("Stripe secret key not found in env variable !");
+StripeConfiguration.MaxNetworkRetries = 3;
+
 
 // Add services to the container.
 builder.Services.AddDbContext<SelflinkDbContext>(options => {

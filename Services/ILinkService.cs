@@ -4,6 +4,6 @@ namespace Selflink_api.Services
 {
     public interface ILinkService
     {
-        public LinksDto SaveLink();
+        public Task<LinksDto?> SaveLink(LinksCreateDto linksCreateDto);
     }
 }
