@@ -27,6 +27,15 @@ builder.Services.AddDbContext<SelflinkDbContext>(options => {
     options.UseMongoDB(connStr!, dbName!);
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "SelfLinkPolicy",
+                      policy  =>
+                      {
+                          policy.WithOrigins("http://localhost:4200",
+                                              "https://selflink.fr");
+                      });
+});
 
 builder.Services.AddScoped<ILinkService, LinkService>();
 
