@@ -21,7 +21,8 @@ public class LinkService : ILinkService
     public async Task<LinksDto?> SaveLink(LinksCreateDto linksCreateDto)
     {
         _logger.LogInformation($"SaveLink : {linksCreateDto.Name}");
-        var transactionSave = _db.Database.BeginTransaction();
+        // TODO => transaction supported with mongodb + EF in 2024 ...
+        // var transactionSave = _db.Database.BeginTransaction();
 
         // TODO => must be from claims token
         string sub = "123";
@@ -83,42 +84,46 @@ public class LinkService : ILinkService
                     Enabled = true,
                 },
                 AllowPromotionCodes = true,
-                AutomaticTax = {
+                AutomaticTax =  new Stripe.PaymentLinkAutomaticTaxOptions {
                     Enabled = true,
                 },
-                AfterCompletion = {
+                AfterCompletion = new Stripe.PaymentLinkAfterCompletionOptions {
                     Type = "hosted_confirmation",
-                    HostedConfirmation = {
+                    HostedConfirmation = new Stripe.PaymentLinkAfterCompletionHostedConfirmationOptions {
                         CustomMessage = "Thanks for your order!"
-                    },  
+                    }
                 }
             };
+
+            PaymentLink paymentLink = new Stripe.PaymentLinkService().Create(StripeOptionsPaymentLinkCreate);
 
             await _db.Links.AddAsync(new Link {
                 Name = linksCreateDto.Name,
                 Sub = sub,
                 Iban = linksCreateDto.Iban,
-                PaymentUrl = new Stripe.PaymentLinkService().Create(StripeOptionsPaymentLinkCreate).Url,
+                PaymentUrl = paymentLink.Url,
                 StripeId = product.Id
             });
 
             await _db.SaveChangesAsync();
 
-            await transactionSave.CommitAsync();
+        // TODO => transaction supported with mongodb + EF in 2024 ...
+            // await transactionSave.CommitAsync();
 
             return new LinksDto {
                 Id = product.Id,
                 Name = linksCreateDto.Name,
                 Sub = sub,
                 Iban = linksCreateDto.Iban,
-                PaymentUrl = new Stripe.PaymentLinkService().Create(StripeOptionsPaymentLinkCreate).Url,
+                PaymentUrl = paymentLink.Url,
                 StripeId = product.Id
             };
             
-        } catch ( Exception ) {
+        } catch ( Exception e ) {
 
-            _logger.LogError($"Error during save link for {linksCreateDto.Name}, rollback transaction");
-            await transactionSave.RollbackAsync();
+            _logger.LogError($"Error during save link for {linksCreateDto.Name} : {e.Message}");
+            // TODO => transaction supported with mongodb + EF in 2024 ...
+            // await transactionSave.RollbackAsync();
             
             return null;
 
