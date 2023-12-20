@@ -2,6 +2,8 @@ using Selflink_api.Dto;
 using Selflink_api.Db;
 using Stripe;
 using Selflink_api.Db.Models;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Selflink_api.Services;
 
@@ -28,9 +30,9 @@ public class LinkService : ILinkService
         string sub = "123";
 
 
-        // TODO : price  ??? =>   reqObj.req.body.price = reqObj.req.body.price * 100;
-        long priceAsDouble = Convert.ToInt64(Convert.ToDecimal(linksCreateDto.PriceUnit) * 100);
-
+        string montantString = "10.50";
+        int x = (int)(Convert.ToDecimal(montantString)* 100);
+        var priceAsDouble = (long) Convert.ToDouble(x);
 
         // https://learn.microsoft.com/en-us/ef/core/saving/transactions
         try {
