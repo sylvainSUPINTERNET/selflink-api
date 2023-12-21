@@ -16,7 +16,11 @@ namespace Selflink_api.Dto
 
         public string PaymentUrl { get; set; }
 
-        public string StripeId { get; set; }
+        public string StripeLinkId { get; set; }
+
+        public string StripeProductId { get; set; }
+
+        public string StripePriceId { get; set; }
 
     }
 }

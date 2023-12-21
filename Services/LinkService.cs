@@ -2,8 +2,7 @@ using Selflink_api.Dto;
 using Selflink_api.Db;
 using Stripe;
 using Selflink_api.Db.Models;
-using System.Globalization;
-using System.Text.RegularExpressions;
+
 
 namespace Selflink_api.Services;
 
@@ -19,8 +18,6 @@ public class LinkService : ILinkService
         _logger = logger;
         _db = db;
     }
-
-
 
     public async Task<LinksDto?> SaveLink(LinksCreateDto linksCreateDto)
     {
@@ -91,7 +88,10 @@ public class LinkService : ILinkService
                     HostedConfirmation = new Stripe.PaymentLinkAfterCompletionHostedConfirmationOptions {
                         CustomMessage = "Thanks for your order!"
                     }
-                }
+                },
+                InvoiceCreation = new Stripe.PaymentLinkInvoiceCreationOptions {
+                    Enabled = true
+                },
             };
 
             PaymentLink paymentLink = new Stripe.PaymentLinkService().Create(StripeOptionsPaymentLinkCreate);
@@ -101,7 +101,9 @@ public class LinkService : ILinkService
                 Sub = sub,
                 Iban = linksCreateDto.Iban,
                 PaymentUrl = paymentLink.Url,
-                StripeId = product.Id
+                StripeLinkId = paymentLink.Id,
+                StripeProductId = product.Id,
+                StripePriceId = price.Id
             });
 
             await _db.SaveChangesAsync();
@@ -110,12 +112,13 @@ public class LinkService : ILinkService
             // await transactionSave.CommitAsync();
 
             return new LinksDto {
-                Id = product.Id,
                 Name = linksCreateDto.Name,
                 Sub = sub,
                 Iban = linksCreateDto.Iban,
                 PaymentUrl = paymentLink.Url,
-                StripeId = product.Id
+                StripeProductId = product.Id,
+                StripeLinkId = paymentLink.Id,
+                StripePriceId = price.Id
             };
             
         } catch ( Exception e ) {

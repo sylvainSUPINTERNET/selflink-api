@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Selflink_api.Db;
 using Selflink_api.Services;
+using Selflink_api.Services.Hosted;
 using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// background service for stripe webhook & consumer
+builder.Services.AddHostedService<StripeWebHookHostedService>();
+builder.Services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
+
 
 var app = builder.Build();
 
