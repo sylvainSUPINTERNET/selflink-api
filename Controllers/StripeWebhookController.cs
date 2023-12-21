@@ -54,7 +54,9 @@ public class StripeWebHookController : ControllerBase
                     
 
                     // TODO : reference : https://github.com/sylvainSUPINTERNET/zerecruteur-service/blob/master/src/controllers/webhook.controller.ts
-
+                    // Create order entity ( each item hold reference to product / price / user detail )
+                    // Check quantity, if too low => disable the link
+                    // Create index on element of search / finish the order page list + pagination with it ( try to don't use naive limit / offset ) 
 
                     
                 }
