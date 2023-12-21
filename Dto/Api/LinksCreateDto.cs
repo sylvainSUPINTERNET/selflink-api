@@ -25,7 +25,7 @@ namespace Selflink_api.Dto
         public string Iban {get; set;}
 
         [Required, MaxLength(150), NotNull]
-        public string description {get; set;}
+        public string Description {get; set;}
         
         [Required, NotNull]
         public List<string> ProductImage {get; set;}

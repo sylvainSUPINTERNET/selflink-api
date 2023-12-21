@@ -20,6 +20,8 @@ public class LinkService : ILinkService
         _db = db;
     }
 
+
+
     public async Task<LinksDto?> SaveLink(LinksCreateDto linksCreateDto)
     {
         _logger.LogInformation($"SaveLink : {linksCreateDto.Name}");
@@ -28,23 +30,18 @@ public class LinkService : ILinkService
 
         // TODO => must be from claims token
         string sub = "123";
-
-
-        string montantString = "10.50";
-        int x = (int)(Convert.ToDecimal(montantString)* 100);
-        var priceAsDouble = (long) Convert.ToDouble(x);
-
+        
         // https://learn.microsoft.com/en-us/ef/core/saving/transactions
         try {
 
             var StripeOptionsProductCreate = new Stripe.ProductCreateOptions
             {
                 Name = linksCreateDto.ProductName,
-                Description = linksCreateDto.description,
+                Description = linksCreateDto.Description,
                 Images = linksCreateDto.ProductImage,
                 Metadata = new Dictionary<string, string>
                 {
-                    { "price", $"{priceAsDouble}" },
+                    { "price", $"{(long)Convert.ToDouble(linksCreateDto.PriceUnit)}" },
                     { "currency", linksCreateDto.Currency.ToLower() },
                 },
             };
@@ -52,7 +49,7 @@ public class LinkService : ILinkService
         
             var StripeOptionsPriceCreate = new Stripe.PriceCreateOptions
             {
-                UnitAmount = priceAsDouble,
+                UnitAmount = (long)Convert.ToDouble(linksCreateDto.PriceUnit),
                 Currency = product.Metadata["currency"],
                 Product = product.Id,
             };
@@ -66,12 +63,12 @@ public class LinkService : ILinkService
                     new Stripe.PaymentLinkLineItemOptions
                     {
                         Price = price.Id,
-                        Quantity = Convert.ToInt64(linksCreateDto.QuantityStock),
+                        Quantity = 1,
                         AdjustableQuantity = new Stripe.PaymentLinkLineItemAdjustableQuantityOptions
                         {
                             Enabled = true,
-                            Maximum = Convert.ToInt64(linksCreateDto.QuantityStock),
                             Minimum = 1,
+                            Maximum = (long)Convert.ToDouble(linksCreateDto.QuantityStock),
                         }
 
                     },
