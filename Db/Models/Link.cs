@@ -6,6 +6,8 @@ namespace Selflink_api.Db.Models
 {
     public class Link
     {
+
+        
         public ObjectId Id { get; set; }
 
         public string Name { get; set; }
@@ -18,7 +20,7 @@ namespace Selflink_api.Db.Models
 
 
         // represent the user id in the token
-        public string Sub { get; set;}
+        public string GoogleOAuth2Sub { get; set;} // when user is logged in with OAuth2 google, this value is filled
 
         public string Iban { get; set; }
 

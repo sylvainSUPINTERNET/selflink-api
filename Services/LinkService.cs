@@ -2,6 +2,7 @@ using Selflink_api.Dto;
 using Selflink_api.Db;
 using Stripe;
 using Selflink_api.Db.Models;
+using MongoDB.Bson;
 
 
 namespace Selflink_api.Services;
@@ -71,10 +72,8 @@ public class LinkService : ILinkService
                         //     Minimum = 1,
                         //     Maximum = (long)Convert.ToDouble(linksCreateDto.QuantityStock),
                         // }
-
                     },
                 },
-
                 ShippingAddressCollection = new Stripe.PaymentLinkShippingAddressCollectionOptions
                 {
                     AllowedCountries = linksCreateDto.ShippingCountries,
@@ -83,7 +82,7 @@ public class LinkService : ILinkService
                 {
                     Enabled = true,
                 },
-                AllowPromotionCodes = true,
+                AllowPromotionCodes = false, // Problem we CAN'T attach the coupon to a specific link .. so nop.
                 AutomaticTax =  new Stripe.PaymentLinkAutomaticTaxOptions {
                     Enabled = true,
                 },
@@ -95,14 +94,14 @@ public class LinkService : ILinkService
                 },
                 InvoiceCreation = new Stripe.PaymentLinkInvoiceCreationOptions {
                     Enabled = true
-                },
+                }
             };
 
             PaymentLink paymentLink = new Stripe.PaymentLinkService().Create(StripeOptionsPaymentLinkCreate);
 
             await _db.Links.AddAsync(new Link {
                 Name = linksCreateDto.Name,
-                Sub = sub,
+                GoogleOAuth2Sub = sub,
                 Iban = linksCreateDto.Iban,
                 PaymentUrl = paymentLink.Url,
                 StripeLinkId = paymentLink.Id,
@@ -112,12 +111,15 @@ public class LinkService : ILinkService
 
             await _db.SaveChangesAsync();
 
-        // TODO => transaction supported with mongodb + EF in 2024 ...
+            // TODO => transaction supported with mongodb + EF in 2024 ...
             // await transactionSave.CommitAsync();
 
+            var justCreated = _db.Links.Where( link => link.StripeLinkId == paymentLink.Id).FirstOrDefault() ?? throw new Exception("Error during save link, can't find it in db");
+
             return new LinksDto {
+                Id = justCreated.Id.ToString(),
                 Name = linksCreateDto.Name,
-                Sub = sub,
+                GoogleOAuth2Sub = sub,
                 Iban = linksCreateDto.Iban,
                 PaymentUrl = paymentLink.Url,
                 StripeProductId = product.Id,
