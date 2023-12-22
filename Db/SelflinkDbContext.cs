@@ -12,6 +12,8 @@ namespace Selflink_api.Db
 
         public DbSet<Link> Links { get; init; }
 
+        public DbSet<Order> Orders { get; init; }
+
         public SelflinkDbContext(DbContextOptions<SelflinkDbContext> options) : base(options)
         {
         }
@@ -21,6 +23,7 @@ namespace Selflink_api.Db
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Link>().ToCollection("links");
+            modelBuilder.Entity<Order>().ToCollection("orders");
         }
 
     }

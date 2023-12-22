@@ -61,12 +61,16 @@ public class LinkService : ILinkService
                     {
                         Price = price.Id,
                         Quantity = 1,
-                        AdjustableQuantity = new Stripe.PaymentLinkLineItemAdjustableQuantityOptions
+                        AdjustableQuantity = new Stripe.PaymentLinkLineItemAdjustableQuantityOptions 
                         {
-                            Enabled = true,
-                            Minimum = 1,
-                            Maximum = (long)Convert.ToDouble(linksCreateDto.QuantityStock),
+                            Enabled = false // can only order 1 by 1
                         }
+                        // AdjustableQuantity = new Stripe.PaymentLinkLineItemAdjustableQuantityOptions
+                        // {
+                        //     Enabled = true,
+                        //     Minimum = 1,
+                        //     Maximum = (long)Convert.ToDouble(linksCreateDto.QuantityStock),
+                        // }
 
                     },
                 },

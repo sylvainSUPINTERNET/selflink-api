@@ -39,6 +39,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<ILinkService, LinkService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
