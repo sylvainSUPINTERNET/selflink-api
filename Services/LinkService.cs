@@ -140,9 +140,32 @@ public class LinkService : ILinkService
     }
     
 
-    public async Task<List<Link>> GetLinksAsync(string sub, string idLast, int limit)
+    // public async Task<List<Link>> GetLinksAsync(string sub, string idLast, int limit)
+    // {
+    //     _logger.LogInformation($"GetLinks : {sub} for {idLast}");
+
+    //     if (string.IsNullOrEmpty(sub)) {
+    //         throw new ArgumentException("sub is empty");
+    //     }
+
+    //     var filter = Builders<Link>.Filter.Eq(l => l.GoogleOAuth2Sub, sub);
+
+    //     if (!string.IsNullOrEmpty(idLast)) {
+    //         var lastObjectId = new ObjectId(idLast);
+    //         var idFilter = Builders<Link>.Filter.Gt("_id", lastObjectId);
+    //         filter = Builders<Link>.Filter.And(filter, idFilter);
+    //     }
+
+    //     return await _linkCollection
+    //         .Find(filter)
+    //         .SortBy(l => l.Id)
+    //         .Limit(limit)
+    //         .ToListAsync();
+    // }
+
+    public async Task<List<Link>> GetLinksAsync(string sub)
     {
-        _logger.LogInformation($"GetLinks : {sub} for {idLast}");
+        _logger.LogInformation($"GetLinks : {sub}");
 
         if (string.IsNullOrEmpty(sub)) {
             throw new ArgumentException("sub is empty");
@@ -150,16 +173,9 @@ public class LinkService : ILinkService
 
         var filter = Builders<Link>.Filter.Eq(l => l.GoogleOAuth2Sub, sub);
 
-        if (!string.IsNullOrEmpty(idLast)) {
-            var lastObjectId = new ObjectId(idLast);
-            var idFilter = Builders<Link>.Filter.Gt("_id", lastObjectId);
-            filter = Builders<Link>.Filter.And(filter, idFilter);
-        }
-
         return await _linkCollection
             .Find(filter)
             .SortBy(l => l.Id)
-            .Limit(limit)
             .ToListAsync();
     }
 

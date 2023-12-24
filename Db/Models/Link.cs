@@ -4,6 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Selflink_api.Db.Models
 {
+    [BsonIgnoreExtraElements]
     public class Link
     {
         [BsonId]

@@ -7,6 +7,6 @@ namespace Selflink_api.Services
     {
         public Task<LinksDto?> SaveLink(LinksCreateDto linksCreateDto);
 
-        public Task<List<Link>> GetLinksAsync(string sub, string idLast, int  limit);
+        public Task<List<Link>> GetLinksAsync(string sub);
     }
 }

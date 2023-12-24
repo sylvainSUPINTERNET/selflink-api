@@ -36,19 +36,39 @@ public class LinkController : ControllerBase
     }
 
 
+    // [HttpGet(Name = "GetLinkAsyncX")]
+    // public async Task<ActionResult<Link>> GetListAsyncX ([FromQuery(Name = "marker")] string idLast = "", [FromQuery(Name = "limit")] int limit = 5)
+    // {
+        
+    //     try {
+            
+    //         // TODO => must be from claims token
+    //         var sub = "123";
+    //         var result = await linkService.GetLinksAsync(sub, idLast, limit);
+    //         return Ok(result);
+
+    //     } catch ( Exception e ) {
+    //         return BadRequest(e.Message);
+    //     }
+    // }
+
+    
+
     [HttpGet(Name = "GetLinkAsync")]
-    public async Task<ActionResult<Link>> GetListAsync ([FromQuery(Name = "marker")] string idLast = "", [FromQuery(Name = "limit")] int limit = 5)
+    public async Task<ActionResult<Link>> GetListAsync ()
     {
         
         try {
-            
             // TODO => must be from claims token
             var sub = "123";
-            var result = await linkService.GetLinksAsync(sub, idLast, limit);
+            var result = await linkService.GetLinksAsync(sub);
             return Ok(result);
 
         } catch ( Exception e ) {
             return BadRequest(e.Message);
         }
     }
+
+
+
 }

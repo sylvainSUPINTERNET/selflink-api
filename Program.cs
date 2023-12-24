@@ -11,22 +11,23 @@ StripeConfiguration.MaxNetworkRetries = 3;
 
 
 // Add services to the container.
-builder.Services.AddDbContext<SelflinkDbContext>(options => {
+// Conf for EF Core + MongoDB ( but is too early to use it for the moment ! wait for 2024)
+// builder.Services.AddDbContext<SelflinkDbContext>(options => {
     
-    string? connStr =  Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING");
-    string? dbName =  Environment.GetEnvironmentVariable("MONGODB_DATABASE_NAME");
+//     string? connStr =  Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING");
+//     string? dbName =  Environment.GetEnvironmentVariable("MONGODB_DATABASE_NAME");
 
     
-    if ( connStr == null ) {
-        Console.WriteLine("MongoDB connection string not found in env variable !");
-    }
+//     if ( connStr == null ) {
+//         Console.WriteLine("MongoDB connection string not found in env variable !");
+//     }
 
-    if ( dbName == null ) {
-        Console.WriteLine("MongoDB database name not found in env variable !");
-    }
+//     if ( dbName == null ) {
+//         Console.WriteLine("MongoDB database name not found in env variable !");
+//     }
 
-    options.UseMongoDB(connStr!, dbName!);
-});
+//     options.UseMongoDB(connStr!, dbName!);
+// });
 
 builder.Services.AddCors(options =>
 {
