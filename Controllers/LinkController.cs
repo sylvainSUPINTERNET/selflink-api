@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver.Linq;
@@ -36,18 +37,18 @@ public class LinkController : ControllerBase
 
 
     [HttpGet(Name = "GetLinkAsync")]
-    public async Task<ActionResult<Link>> GetListAsync () 
+    public async Task<ActionResult<Link>> GetListAsync ([FromQuery(Name = "marker")] string idLast = "", [FromQuery(Name = "limit")] int limit = 5)
     {
-        // Flow : 
-
-        // j'envois X classé en ASC. 
-        // liste de X elements 
-
-        // côté front
-        // j'affiche les X elements quand j'arrive à la fin de la liste je fais une requete pour avoir les X suivant ( envoit l'_id du dernier du coup )
         
-        
-        var result = await linkService.GetLinksAsync("123");
-        return Ok(result);
+        try {
+            
+            // TODO => must be from claims token
+            var sub = "123";
+            var result = await linkService.GetLinksAsync(sub, idLast, limit);
+            return Ok(result);
+
+        } catch ( Exception e ) {
+            return BadRequest(e.Message);
+        }
     }
 }

@@ -140,44 +140,27 @@ public class LinkService : ILinkService
     }
     
 
-    public async Task<List<Link>> GetLinksAsync(string sub)
+    public async Task<List<Link>> GetLinksAsync(string sub, string idLast, int limit)
     {
-        _logger.LogInformation($"GetLinks : {sub}");
+        _logger.LogInformation($"GetLinks : {sub} for {idLast}");
 
-        var lastId = "65889cd13938796125d6a5a4";
+        if (string.IsNullOrEmpty(sub)) {
+            throw new ArgumentException("sub is empty");
+        }
 
-        // var sort = Builders<BsonDocument>.Sort.Descending("_id");
-        // var links = await _db.Links.Where( link => link.GoogleOAuth2Sub == sub );
+        var filter = Builders<Link>.Filter.Eq(l => l.GoogleOAuth2Sub, sub);
 
+        if (!string.IsNullOrEmpty(idLast)) {
+            var lastObjectId = new ObjectId(idLast);
+            var idFilter = Builders<Link>.Filter.Gt("_id", lastObjectId);
+            filter = Builders<Link>.Filter.And(filter, idFilter);
+        }
 
-        // var links = await _db.GetClient()
-        //             //    .Where(l => l.GoogleOAuth2Sub == "123" && l.Id > objectIdToCompare)
-        //             .Where(l=>l.GoogleOAuth2Sub == "123")
-        //                .OrderBy(l => l.Id)
-        //                .Take(2)
-        //                .ToListAsync();
-
-        // request 1
-        // var result = await _linkCollection
-        //     .Find(l => l.GoogleOAuth2Sub == sub)
-        //     .SortBy(l => l.Id)
-        //     .Limit(2)
-        //     .ToListAsync();
-
-        // Request 2 ( sending previous _id )
-        var filter = Builders<Link>.Filter.And(
-            Builders<Link>.Filter.Eq(l => l.GoogleOAuth2Sub, sub),
-            Builders<Link>.Filter.Gt("_id", new ObjectId(lastId))
-        );
-
-        var result = await _linkCollection
+        return await _linkCollection
             .Find(filter)
             .SortBy(l => l.Id)
-            // .Find(l=>l.GoogleOAuth2Sub == sub)
-            .Limit(2)
+            .Limit(limit)
             .ToListAsync();
-
-        return result;
     }
 
 }
