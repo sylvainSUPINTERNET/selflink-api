@@ -33,4 +33,21 @@ public class LinkController : ControllerBase
 
         return Ok(res);
     }
+
+
+    [HttpGet(Name = "GetLinkAsync")]
+    public async Task<ActionResult<Link>> GetListAsync () 
+    {
+        // Flow : 
+
+        // j'envois X classé en ASC. 
+        // liste de X elements 
+
+        // côté front
+        // j'affiche les X elements quand j'arrive à la fin de la liste je fais une requete pour avoir les X suivant ( envoit l'_id du dernier du coup )
+        
+        
+        var result = await linkService.GetLinksAsync("123");
+        return Ok(result);
+    }
 }

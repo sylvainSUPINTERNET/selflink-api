@@ -38,6 +38,7 @@ builder.Services.AddCors(options =>
                       });
 });
 
+builder.Services.AddSingleton<IMongoDbClientSingleton, MongoDbClientSingleton>();
 builder.Services.AddScoped<ILinkService, LinkService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
