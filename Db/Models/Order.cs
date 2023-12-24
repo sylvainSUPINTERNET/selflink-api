@@ -8,8 +8,7 @@ namespace Selflink_api.Db.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        [BsonElement("_id")]
-        public ObjectId Id { get; set; }
+        public string? Id { get; set; }
 
         [BsonElement("stripeProductId")]
         public string StripeProductId { get; set; }

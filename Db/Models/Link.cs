@@ -6,11 +6,9 @@ namespace Selflink_api.Db.Models
 {
     public class Link
     {
-
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        [BsonElement("_id")]
-        public ObjectId Id { get; set; }
+        public string? Id { get; set; }
 
         [BsonElement("name")]
         public string Name { get; set; }

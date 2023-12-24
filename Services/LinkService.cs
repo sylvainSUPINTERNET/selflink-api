@@ -118,7 +118,7 @@ public class LinkService : ILinkService
                 var justCreated = result.FirstOrDefault() ?? throw new Exception("Error during save link, can't find it in db");
 
                 return new LinksDto {
-                    Id = justCreated.Id.ToString(),
+                    Id = justCreated.Id!.ToString(),
                     Name = linksCreateDto.Name,
                     GoogleOAuth2Sub = sub,
                     Iban = linksCreateDto.Iban,
@@ -144,7 +144,7 @@ public class LinkService : ILinkService
     {
         _logger.LogInformation($"GetLinks : {sub}");
 
-        var lastId = "615f9b7b9b7b7b7b7b7b7b7b";
+        var lastId = "65889cd13938796125d6a5a4";
 
         // var sort = Builders<BsonDocument>.Sort.Descending("_id");
         // var links = await _db.Links.Where( link => link.GoogleOAuth2Sub == sub );
@@ -158,18 +158,26 @@ public class LinkService : ILinkService
         //                .ToListAsync();
 
         // request 1
-        _linkCollection
-            .Find(l => l.GoogleOAuth2Sub == sub)
-            .SortBy(l => l.Id)
-            .Limit(10);
+        // var result = await _linkCollection
+        //     .Find(l => l.GoogleOAuth2Sub == sub)
+        //     .SortBy(l => l.Id)
+        //     .Limit(2)
+        //     .ToListAsync();
 
         // Request 2 ( sending previous _id )
-        _linkCollection
-            .Find(l => l.GoogleOAuth2Sub == sub && l.Id > ObjectId.Parse(lastId))    
-            .SortBy(l => l.Id)
-            .Limit(10);
+        var filter = Builders<Link>.Filter.And(
+            Builders<Link>.Filter.Eq(l => l.GoogleOAuth2Sub, sub),
+            Builders<Link>.Filter.Gt("_id", new ObjectId(lastId))
+        );
 
-        return Task.FromResult(new List<Link>()).Result;
+        var result = await _linkCollection
+            .Find(filter)
+            .SortBy(l => l.Id)
+            // .Find(l=>l.GoogleOAuth2Sub == sub)
+            .Limit(2)
+            .ToListAsync();
+
+        return result;
     }
 
 }
