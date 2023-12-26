@@ -92,7 +92,7 @@ public class OrderService : IOrderService
     }
 
 
-    public async void RefundOrderAsync(OrderRefundDto orderRefundDto) {
+    public async Task<OrderRefundDto> RefundOrderAsync(OrderRefundDto orderRefundDto) {
         // TODO : implement sub
         var sub = "123";
 
@@ -129,5 +129,8 @@ public class OrderService : IOrderService
             Builders<Order>.Filter.Eq(o => o.GoogleOAuth2Sub, sub) & Builders<Order>.Filter.Eq(o => o.StripePaymentIntentId, orderRefundDto.StripePaymentIntentId),
             Builders<Order>.Update.Set(o => o.Status, "refunded")
         );
+
+        
+        return Task.FromResult(orderRefundDto).Result;
     }
 }
