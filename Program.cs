@@ -35,7 +35,7 @@ builder.Services.AddCors(options =>
                       policy  =>
                       {
                           policy.WithOrigins("http://localhost:4200",
-                                              "https://selflink.fr");
+                                              "https://selflink.fr").AllowAnyMethod().AllowAnyHeader();
                       });
 });
 
@@ -54,6 +54,8 @@ builder.Services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
 
 
 var app = builder.Build();
+
+app.UseCors("SelfLinkPolicy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

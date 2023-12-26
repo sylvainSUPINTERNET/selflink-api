@@ -31,4 +31,6 @@ public class OrderCreateDto
     public string Currency { get; set;}
 
     public string Status {get;set;} // sent, refund, pending
+
+    public string ProductName {get;set;}
 }

@@ -33,7 +33,12 @@ public class LinkService : ILinkService
         string sub = "123";
 
         using (var session = await _db.GetClient().StartSessionAsync()) {
-            session.StartTransaction();
+
+
+                // TODO
+
+            // Not working locally with basic docker mongoDB !
+            //session.StartTransaction();
 
             try {
 
@@ -130,7 +135,10 @@ public class LinkService : ILinkService
                 
             } catch ( Exception e ) {
                 _logger.LogError($"Error during save link for {linksCreateDto.Name} : {e.Message}");
-                await session.CommitTransactionAsync();
+                
+                // TODO
+                // Not working locally with basic docker mongoDB !
+                //await session.CommitTransactionAsync();
                 return null;
 
             }
@@ -140,28 +148,7 @@ public class LinkService : ILinkService
     }
     
 
-    // public async Task<List<Link>> GetLinksAsync(string sub, string idLast, int limit)
-    // {
-    //     _logger.LogInformation($"GetLinks : {sub} for {idLast}");
 
-    //     if (string.IsNullOrEmpty(sub)) {
-    //         throw new ArgumentException("sub is empty");
-    //     }
-
-    //     var filter = Builders<Link>.Filter.Eq(l => l.GoogleOAuth2Sub, sub);
-
-    //     if (!string.IsNullOrEmpty(idLast)) {
-    //         var lastObjectId = new ObjectId(idLast);
-    //         var idFilter = Builders<Link>.Filter.Gt("_id", lastObjectId);
-    //         filter = Builders<Link>.Filter.And(filter, idFilter);
-    //     }
-
-    //     return await _linkCollection
-    //         .Find(filter)
-    //         .SortBy(l => l.Id)
-    //         .Limit(limit)
-    //         .ToListAsync();
-    // }
 
     public async Task<List<Link>> GetLinksAsync(string sub)
     {

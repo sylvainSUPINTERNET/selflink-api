@@ -54,6 +54,10 @@ public class StripeWebHookController : ControllerBase
                     _logger.LogInformation(" >>  CheckoutSessionCompleted paid");
                     var service = new Stripe.Checkout.SessionService();
                     StripeList<LineItem> checkoutSessionLineItemsList = await service.ListLineItemsAsync(checkoutSessionData.Id);
+
+
+                    Stripe.ProductService productService = new Stripe.ProductService();
+                    Stripe.Product product = await productService.GetAsync(checkoutSessionLineItemsList.Data[0].Price.ProductId);
             
                     // Ref :  reference : https://github.com/sylvainSUPINTERNET/zerecruteur-service/blob/master/src/controllers/webhook.controller.ts
                     // TODO EF + MongoDB 2023 => No support for transaction waiting for 2024 ...
@@ -72,6 +76,7 @@ public class StripeWebHookController : ControllerBase
                         QuantityToSend = $"{checkoutSessionLineItemsList.Data[0].Quantity}",
                         Amount = $"{checkoutSessionLineItemsList.Data[0].AmountTotal}", // Include TAX + shipping + quantity total ( express as cents format so 2000 = 20)
                         Status = OrderStatusEnum.PENDING.ToString(),
+                        ProductName = product.Name,
                         Currency = checkoutSessionData.Currency
                     });
 
