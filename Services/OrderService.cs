@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using Selflink_api.Db;
 using Selflink_api.Db.Models;
 using Selflink_api.Dto;
+using Selflink_api.Dto.Api;
 
 namespace Selflink_api.Services;
 
@@ -88,5 +89,45 @@ public class OrderService : IOrderService
             .SortBy(l => l.Id)
             .Limit(limit)
             .ToListAsync();
+    }
+
+
+    public async void RefundOrderAsync(OrderRefundDto orderRefundDto) {
+        // TODO : implement sub
+        var sub = "123";
+
+        Stripe.PaymentIntentService paymentIntentService = new Stripe.PaymentIntentService();
+        Stripe.PaymentIntent paymentIntent = paymentIntentService.Get(orderRefundDto.StripePaymentIntentId);
+
+        if ( paymentIntent == null ) {
+            throw new Exception("PaymentIntent not found");
+        }
+
+        if ( paymentIntent.LatestCharge == null ) {
+            throw new Exception("PaymentIntent.LatestCharge is null");
+        }
+
+        Stripe.ChargeService chargeService = new Stripe.ChargeService();
+        Stripe.Charge charge = chargeService.Get(paymentIntent.LatestCharge.Id);
+        
+        if ( charge == null ) {
+            throw new Exception("Charge not found");
+        }
+
+        if ( charge.Refunded ) {
+            throw new Exception("Charge already refunded");
+        }
+
+        Stripe.RefundCreateOptions refundCreateOptions = new Stripe.RefundCreateOptions();
+        refundCreateOptions.Amount = charge.Amount;
+        refundCreateOptions.Charge = charge.Id;
+
+        Stripe.RefundService refundService = new Stripe.RefundService();
+        Stripe.Refund refund = refundService.Create(refundCreateOptions);
+
+        await _orderCollection.UpdateOneAsync(
+            Builders<Order>.Filter.Eq(o => o.GoogleOAuth2Sub, sub) & Builders<Order>.Filter.Eq(o => o.StripePaymentIntentId, orderRefundDto.StripePaymentIntentId),
+            Builders<Order>.Update.Set(o => o.Status, "refunded")
+        );
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Selflink_api.Db.Models;
 using Selflink_api.Dto;
+using Selflink_api.Dto.Api;
 using Selflink_api.Services;
 
 namespace Selflink_api.Controllers;
@@ -28,6 +29,20 @@ namespace Selflink_api.Controllers;
 
             try {
                 return Ok(await _orderService.GetOrdersAsync(orderListCriteria.StripeProductId, orderListCriteria.IdLast, orderListCriteria.Limit));
+            } catch ( Exception e ) {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        [HttpPost(Name = "RefundOrder")]
+        public async Task<ActionResult> RefundOrderAsync(OrderRefundDto orderRefundDto)
+        {
+            _logger.LogInformation("RefundOrder triggered");
+
+            try {
+                await _orderService.RefundOrderAsync(orderRefundDto);
+                return Ok();
             } catch ( Exception e ) {
                 return BadRequest(e.Message);
             }
