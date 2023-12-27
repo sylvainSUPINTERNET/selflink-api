@@ -14,6 +14,9 @@ namespace Selflink_api.Db.Models
         [BsonElement("stripeProductId")]
         public string StripeProductId { get; set; }
 
+        [BsonElement("prductName")]
+        public string ProductName { get; set;}
+
         [BsonElement("stripePriceId")]
         public string StripePriceId { get; set; }
 

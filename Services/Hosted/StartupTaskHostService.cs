@@ -78,7 +78,8 @@ internal class StartupTaskHostService: IHostedService
                 QuantityToSend = $"{i}",
                 Amount = "1000",
                 Currency = "eur",
-                Status = "pending"
+                Status = "pending",
+                ProductName = "test product name"
 
             };
             orders.Add(order);
@@ -101,7 +102,8 @@ internal class StartupTaskHostService: IHostedService
                 QuantityToSend = $"{10}",
                 Amount = "1000",
                 Currency = "eur",
-                Status = "pending"
+                Status = "pending",
+                ProductName = "test product name"
             };
         orders.Add(orderProductId0);
         

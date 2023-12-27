@@ -52,7 +52,8 @@ public class OrderService : IOrderService
             QuantityToSend = orderCreateDto.QuantityToSend,
             Amount = orderCreateDto.Amount,
             Currency = orderCreateDto.Currency,
-            Status = orderCreateDto.Status
+            Status = orderCreateDto.Status,
+            ProductName = orderCreateDto.ProductName
         });
 
         return Task.FromResult(orderCreateDto).Result;
