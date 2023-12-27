@@ -78,8 +78,7 @@ internal class StartupTaskHostService: IHostedService
                 QuantityToSend = $"{i}",
                 Amount = "1000",
                 Currency = "eur",
-                Status = "pending",
-                GoogleOAuth2Sub = sub,
+                Status = "pending"
 
             };
             orders.Add(order);
@@ -102,8 +101,7 @@ internal class StartupTaskHostService: IHostedService
                 QuantityToSend = $"{10}",
                 Amount = "1000",
                 Currency = "eur",
-                Status = "pending",
-                GoogleOAuth2Sub = sub,
+                Status = "pending"
             };
         orders.Add(orderProductId0);
         

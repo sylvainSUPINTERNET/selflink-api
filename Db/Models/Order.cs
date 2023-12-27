@@ -56,9 +56,6 @@ namespace Selflink_api.Db.Models
         [BsonElement("status")]
         public string Status {get;set;} // sent, refunded, pending
 
-        [BsonElement("googleOAuth2Sub")]
-        public string GoogleOAuth2Sub { get; set;} // when user is logged in with OAuth2 google, this value is filled
-
 
         [BsonElement("createdAt")]
         public DateTime CreatedAt { get; private set; }
