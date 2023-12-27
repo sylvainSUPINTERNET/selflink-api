@@ -138,20 +138,19 @@ public class OrderService : IOrderService
             throw new Exception("orderStatusDto is empty");
         }
 
-        List<ObjectId> orderIdsPending = orderStatusListDto.Where(o=>o.Status == "pending").Select(o => new ObjectId(o.Id)).ToList();
-        List<ObjectId> orderIdsPendingToSend = orderStatusListDto.Where(o=>o.Status == "send").Select(o => new ObjectId(o.Id)).ToList();
-
+        List<string> orderIdsPending = orderStatusListDto.Where(o=>o.Status == "pending").Select(o =>o.Id).ToList();
+        List<string> orderIdsPendingToSend = orderStatusListDto.Where(o=>o.Status == "send").Select(o => o.Id).ToList();
 
         if ( orderIdsPending.Count > 0 ) {
             await _orderCollection.UpdateManyAsync(
-                Builders<Order>.Filter.In(o => new ObjectId(o.Id), orderIdsPending),
+                Builders<Order>.Filter.In(o => o.Id, orderIdsPending),
                 Builders<Order>.Update.Set(o => o.Status, "pending")
             );
         }
 
         if ( orderIdsPendingToSend.Count > 0 ) {
             await _orderCollection.UpdateManyAsync(
-                Builders<Order>.Filter.In(o => new ObjectId(o.Id), orderIdsPendingToSend),
+                Builders<Order>.Filter.In(o => o.Id, orderIdsPendingToSend),
                 Builders<Order>.Update.Set(o => o.Status, "send")
             );
         }
