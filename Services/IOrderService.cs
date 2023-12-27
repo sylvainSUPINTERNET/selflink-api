@@ -12,5 +12,5 @@ public interface IOrderService
 
     public Task<OrderRefundDto> RefundOrderAsync(OrderRefundDto orderRefundDto);
 
-    public Task<OrderStatusDto> UpdateStatusOrderAsync(OrderStatusDto orderStatusDto);
+    public Task<bool> UpdateStatusOrderAsync(List<OrderStatusDto> orderStatusDto);
 }

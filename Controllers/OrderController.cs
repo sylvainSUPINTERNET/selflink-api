@@ -49,7 +49,7 @@ namespace Selflink_api.Controllers;
         }
 
         [HttpPut(Name = "UpdateStatusOrder")]
-        public async Task<ActionResult> UpdateStatusOrderAsync(OrderStatusDto orderStatusDto)
+        public async Task<ActionResult> UpdateStatusOrderAsync(List<OrderStatusDto> orderStatusDto)
         {
             _logger.LogInformation("UpdateStatusOrder triggered");
 

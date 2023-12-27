@@ -132,13 +132,30 @@ public class OrderService : IOrderService
         return Task.FromResult(orderRefundDto).Result;
     }
 
-    public async Task<OrderStatusDto> UpdateStatusOrderAsync(OrderStatusDto orderStatusDto) {
+    public async Task<bool> UpdateStatusOrderAsync(List<OrderStatusDto> orderStatusListDto) {
 
-        await _orderCollection.UpdateOneAsync(
-            Builders<Order>.Filter.Eq(o => o.StripePaymentIntentId, orderStatusDto.Id),
-            Builders<Order>.Update.Set(o => o.Status, orderStatusDto.Status)
-        );
+        if ( orderStatusListDto ==null || orderStatusListDto.Count == 0 ) {
+            throw new Exception("orderStatusDto is empty");
+        }
 
-        return Task.FromResult(orderStatusDto).Result;
+        List<ObjectId> orderIdsPending = orderStatusListDto.Where(o=>o.Status == "pending").Select(o => new ObjectId(o.Id)).ToList();
+        List<ObjectId> orderIdsPendingToSend = orderStatusListDto.Where(o=>o.Status == "send").Select(o => new ObjectId(o.Id)).ToList();
+
+
+        if ( orderIdsPending.Count > 0 ) {
+            await _orderCollection.UpdateManyAsync(
+                Builders<Order>.Filter.In(o => new ObjectId(o.Id), orderIdsPending),
+                Builders<Order>.Update.Set(o => o.Status, "pending")
+            );
+        }
+
+        if ( orderIdsPendingToSend.Count > 0 ) {
+            await _orderCollection.UpdateManyAsync(
+                Builders<Order>.Filter.In(o => new ObjectId(o.Id), orderIdsPendingToSend),
+                Builders<Order>.Update.Set(o => o.Status, "send")
+            );
+        }
+        
+        return Task.FromResult(true).Result;
     }
 }
