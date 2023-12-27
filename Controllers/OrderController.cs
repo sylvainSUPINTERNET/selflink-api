@@ -35,13 +35,26 @@ namespace Selflink_api.Controllers;
         }
 
 
-        [HttpPost(Name = "RefundOrder")]
+        [HttpPost("refund", Name = "RefundOrder")]
         public async Task<ActionResult> RefundOrderAsync(OrderRefundDto orderRefundDto)
         {
             _logger.LogInformation("RefundOrder triggered");
 
             try {
                 await _orderService.RefundOrderAsync(orderRefundDto);
+                return Ok();
+            } catch ( Exception e ) {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut(Name = "UpdateStatusOrder")]
+        public async Task<ActionResult> UpdateStatusOrderAsync(OrderStatusDto orderStatusDto)
+        {
+            _logger.LogInformation("UpdateStatusOrder triggered");
+
+            try {
+                await _orderService.UpdateStatusOrderAsync(orderStatusDto);
                 return Ok();
             } catch ( Exception e ) {
                 return BadRequest(e.Message);

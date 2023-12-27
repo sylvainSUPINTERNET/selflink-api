@@ -11,4 +11,6 @@ public interface IOrderService
     public Task<List<Order>> GetOrdersAsync(string stripeProductId, string idLast, int limit);
 
     public Task<OrderRefundDto> RefundOrderAsync(OrderRefundDto orderRefundDto);
+
+    public Task<OrderStatusDto> UpdateStatusOrderAsync(OrderStatusDto orderStatusDto);
 }

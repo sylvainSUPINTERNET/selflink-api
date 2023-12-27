@@ -20,7 +20,7 @@ public class OrderService : IOrderService
     {
         _logger = logger;
         _db = db;
-        _orderCollection = db.GetDatabase().GetCollection<Order>(db.GetLinkCollectionName());
+        _orderCollection = db.GetDatabase().GetCollection<Order>(db.GetOrderCollectionName());
     }
 
     public Task<List<Order>> GetOrdersAsync(string sub)
@@ -93,8 +93,6 @@ public class OrderService : IOrderService
 
 
     public async Task<OrderRefundDto> RefundOrderAsync(OrderRefundDto orderRefundDto) {
-        // TODO : implement sub
-        var sub = "123";
 
         Stripe.PaymentIntentService paymentIntentService = new Stripe.PaymentIntentService();
         Stripe.PaymentIntent paymentIntent = paymentIntentService.Get(orderRefundDto.StripePaymentIntentId);
@@ -126,11 +124,21 @@ public class OrderService : IOrderService
         Stripe.Refund refund = refundService.Create(refundCreateOptions);
 
         await _orderCollection.UpdateOneAsync(
-            Builders<Order>.Filter.Eq(o => o.GoogleOAuth2Sub, sub) & Builders<Order>.Filter.Eq(o => o.StripePaymentIntentId, orderRefundDto.StripePaymentIntentId),
+            Builders<Order>.Filter.Eq(o => o.StripePaymentIntentId, orderRefundDto.StripePaymentIntentId),
             Builders<Order>.Update.Set(o => o.Status, "refunded")
         );
 
         
         return Task.FromResult(orderRefundDto).Result;
+    }
+
+    public async Task<OrderStatusDto> UpdateStatusOrderAsync(OrderStatusDto orderStatusDto) {
+
+        await _orderCollection.UpdateOneAsync(
+            Builders<Order>.Filter.Eq(o => o.StripePaymentIntentId, orderStatusDto.Id),
+            Builders<Order>.Update.Set(o => o.Status, orderStatusDto.Status)
+        );
+
+        return Task.FromResult(orderStatusDto).Result;
     }
 }

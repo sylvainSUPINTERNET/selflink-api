@@ -50,6 +50,15 @@ builder.Services.AddSwaggerGen();
 
 // background service for stripe webhook & consumer
 builder.Services.AddHostedService<StripeWebHookHostedService>();
+
+
+if ( Environment.GetEnvironmentVariable("LOAD_DATABASE") != null && Environment.GetEnvironmentVariable("LOAD_DATABASE") == "true") {
+        // Load database 
+    Console.WriteLine($"LOAD_DATABASE has been set, loading database data ...");
+    builder.Services.AddHostedService<StartupTaskHostService>();
+}
+
+
 builder.Services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
 
 
@@ -60,6 +69,7 @@ app.UseCors("SelfLinkPolicy");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+
     app.UseSwagger();
     app.UseSwaggerUI();
 }
