@@ -6,4 +6,6 @@ public class OrderListCreateria
     public int Limit { get; set; } = 5;
 
     public string StripeProductId { get; set; } = "";
+
+    public List<string> StatusList { get; set; }
 }

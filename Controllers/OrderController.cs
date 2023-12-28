@@ -28,7 +28,7 @@ namespace Selflink_api.Controllers;
             _logger.LogInformation("GetUserOrders triggered");
 
             try {
-                return Ok(await _orderService.GetOrdersAsync(orderListCriteria.StripeProductId, orderListCriteria.IdLast, orderListCriteria.Limit));
+                return Ok(await _orderService.GetOrdersAsync(orderListCriteria.StripeProductId, orderListCriteria.IdLast, orderListCriteria.Limit, orderListCriteria.StatusList));
             } catch ( Exception e ) {
                 return BadRequest(e.Message);
             }
@@ -42,7 +42,7 @@ namespace Selflink_api.Controllers;
 
             try {
                 await _orderService.RefundOrderAsync(orderRefundDto);
-                return Ok();
+                return Ok(orderRefundDto);
             } catch ( Exception e ) {
                 return BadRequest(e.Message);
             }

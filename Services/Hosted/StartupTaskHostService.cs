@@ -60,14 +60,14 @@ internal class StartupTaskHostService: IHostedService
 
         List<Order> orders = [];
 
-        for (int i = 0; i < 60; i++)
+        for (int i = 0; i < 80; i++)
         {
             var order = new Order
             {
                 Id = ObjectId.GenerateNewId().ToString(),
                 StripeProductId = $"{productIdTest}1", // 60 orders for the first link
-                StripePriceId = "http://test.com",
-                StripePaymentIntentId = "http://test.com",
+                StripePriceId = $"price_id_{i}",
+                StripePaymentIntentId = $"test_payment_intent_id{i}",
                 Phone = "+33612345678",
                 Email = "xxx@dl.com",
                 ShippingLine1 = "1 rue de la paix",
@@ -91,7 +91,7 @@ internal class StartupTaskHostService: IHostedService
                 Id = ObjectId.GenerateNewId().ToString(),
                 StripeProductId = $"{productIdTest}0", // 60 orders for the first link
                 StripePriceId = "http://test.com",
-                StripePaymentIntentId = "http://test.com",
+                StripePaymentIntentId = "test_payment_intent_id",
                 Phone = "+33612345678",
                 Email = "xxx@dl.com",
                 ShippingLine1 = "1 rue de la paix",

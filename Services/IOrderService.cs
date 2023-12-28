@@ -8,7 +8,7 @@ public interface IOrderService
 {
     public Task<OrderCreateDto?> SaveOrderAsync(OrderCreateDto orderCreateDto);
 
-    public Task<List<Order>> GetOrdersAsync(string stripeProductId, string idLast, int limit);
+    public Task<List<Order>> GetOrdersAsync(string stripeProductId, string idLast, int limit, List<string> status);
 
     public Task<OrderRefundDto> RefundOrderAsync(OrderRefundDto orderRefundDto);
 

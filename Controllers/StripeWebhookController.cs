@@ -75,7 +75,7 @@ public class StripeWebHookController : ControllerBase
                         ShippingState = checkoutSessionData.ShippingDetails.Address.State != "" ? checkoutSessionData.ShippingDetails.Address.State : null,
                         QuantityToSend = $"{checkoutSessionLineItemsList.Data[0].Quantity}",
                         Amount = $"{checkoutSessionLineItemsList.Data[0].AmountTotal}", // Include TAX + shipping + quantity total ( express as cents format so 2000 = 20)
-                        Status = OrderStatusEnum.PENDING.ToString(),
+                        Status = OrderStatusEnum.PENDING.ToString().ToLower(),
                         ProductName = product.Name,
                         Currency = checkoutSessionData.Currency
                     });

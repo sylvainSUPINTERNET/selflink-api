@@ -69,7 +69,7 @@ public class OrderService : IOrderService
     * 
     * @return List<Order>
     */
-    public async Task<List<Order>> GetOrdersAsync(string stripeProductId, string idLast, int limit)
+    public async Task<List<Order>> GetOrdersAsync(string stripeProductId, string idLast, int limit, List<string> statusList)
     {
         _logger.LogInformation($"GetOrders : {stripeProductId} for {idLast}");
 
@@ -78,13 +78,26 @@ public class OrderService : IOrderService
         }
 
         var filter = Builders<Order>.Filter.Eq(l => l.StripeProductId, stripeProductId);
+        
+
+        if ( statusList == null || statusList.Count == 0 ) {
+            statusList = new List<string> {
+                OrderStatusEnum.PENDING.ToString().ToLower(),
+                OrderStatusEnum.REFUNDED.ToString().ToLower(),
+                OrderStatusEnum.ARCHIVE.ToString().ToLower()
+            };
+        }
+        
+        var filterStatus = Builders<Order>.Filter.In(l => l.Status, statusList);
+
 
         if ( !string.IsNullOrEmpty(idLast) ) {
             var lastObjectId = new ObjectId(idLast);
             var idFilter = Builders<Order>.Filter.Gt("_id", lastObjectId);
             filter = Builders<Order>.Filter.And(filter, idFilter);
         }
-
+        
+        filter = Builders<Order>.Filter.And(filter, filterStatus);
         return await _orderCollection
             .Find(filter)
             .SortBy(l => l.Id)
@@ -95,6 +108,7 @@ public class OrderService : IOrderService
 
     public async Task<OrderRefundDto> RefundOrderAsync(OrderRefundDto orderRefundDto) {
 
+        
         Stripe.PaymentIntentService paymentIntentService = new Stripe.PaymentIntentService();
         Stripe.PaymentIntent paymentIntent = paymentIntentService.Get(orderRefundDto.StripePaymentIntentId);
 
@@ -123,39 +137,51 @@ public class OrderService : IOrderService
 
         Stripe.RefundService refundService = new Stripe.RefundService();
         Stripe.Refund refund = refundService.Create(refundCreateOptions);
+        
 
         await _orderCollection.UpdateOneAsync(
             Builders<Order>.Filter.Eq(o => o.StripePaymentIntentId, orderRefundDto.StripePaymentIntentId),
-            Builders<Order>.Update.Set(o => o.Status, "refunded")
+            Builders<Order>.Update.Set(o => o.Status, OrderStatusEnum.REFUNDED.ToString().ToLower())
         );
-
+        _logger.LogInformation($"Order {orderRefundDto.StripePaymentIntentId} refunded");
         
         return Task.FromResult(orderRefundDto).Result;
     }
 
     public async Task<bool> UpdateStatusOrderAsync(List<OrderStatusDto> orderStatusListDto) {
 
+        bool getUpdate = false;
+
         if ( orderStatusListDto ==null || orderStatusListDto.Count == 0 ) {
             throw new Exception("orderStatusDto is empty");
         }
 
-        List<string> orderIdsPending = orderStatusListDto.Where(o=>o.Status == "pending").Select(o =>o.Id).ToList();
-        List<string> orderIdsPendingToSend = orderStatusListDto.Where(o=>o.Status == "send").Select(o => o.Id).ToList();
+        List<string> orderIdsToArchive = orderStatusListDto.Where(o=>o.Status == OrderStatusEnum.ARCHIVE.ToString().ToLower()).Select(o =>o.Id).ToList();
+        // List<string> orderIdsPendingToSend = orderStatusListDto.Where(o=>o.Status == "send").Select(o => o.Id).ToList();
 
-        if ( orderIdsPending.Count > 0 ) {
-            await _orderCollection.UpdateManyAsync(
-                Builders<Order>.Filter.In(o => o.Id, orderIdsPending),
-                Builders<Order>.Update.Set(o => o.Status, "pending")
+        if ( orderIdsToArchive.Count > 0 ) {
+
+            var res = await _orderCollection.UpdateManyAsync(
+                Builders<Order>.Filter.In(o => o.Id, orderIdsToArchive),
+                Builders<Order>.Update.Set(o => o.Status, OrderStatusEnum.ARCHIVE.ToString().ToLower())
             );
+
+            if ( res.ModifiedCount > 0 ) {
+                getUpdate = true;
+            }
         }
 
-        if ( orderIdsPendingToSend.Count > 0 ) {
-            await _orderCollection.UpdateManyAsync(
-                Builders<Order>.Filter.In(o => o.Id, orderIdsPendingToSend),
-                Builders<Order>.Update.Set(o => o.Status, "send")
-            );
+        // if ( orderIdsPendingToSend.Count > 0 ) {
+        //     await _orderCollection.UpdateManyAsync(
+        //         Builders<Order>.Filter.In(o => o.Id, orderIdsPendingToSend),
+        //         Builders<Order>.Update.Set(o => o.Status, "send")
+        //     );
+        // }
+
+        if ( getUpdate == false ) {
+            throw new Exception("No update done");
         }
         
-        return Task.FromResult(true).Result;
+        return Task.FromResult(getUpdate).Result;
     }
 }
