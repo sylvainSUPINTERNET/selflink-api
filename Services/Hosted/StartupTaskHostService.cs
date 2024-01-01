@@ -34,7 +34,7 @@ internal class StartupTaskHostService: IHostedService
         await _linkCollection.DeleteManyAsync(new BsonDocument());
         await _orderCollection.DeleteManyAsync(new BsonDocument());
 
-        var sub = "123";
+        var sub = "114706333881848131803";
         var productIdTest = "prod_test";
 
         var linkId = "link_test";
@@ -46,12 +46,14 @@ internal class StartupTaskHostService: IHostedService
             {
                 Id = ObjectId.GenerateNewId().ToString(),
                 Name = $"Link {i}",
-                GoogleOAuth2Sub = sub,
+                Sub = "114706333881848131803",
                 Iban = "FR7630006000011234567890189",
                 PaymentUrl="https://www.google.com",
                 StripeProductId = $"{productIdTest}{i}",
                 StripePriceId = "http://test.com",
                 StripeLinkId = linkId,
+                Email = "test@test.com",
+                ProviderIssuer = "https://accounts.google.com",
             };
             links.Add(link);
         }

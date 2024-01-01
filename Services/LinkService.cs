@@ -25,17 +25,13 @@ public class LinkService : ILinkService
         
     }
 
-    public async Task<LinksDto?> SaveLink(LinksCreateDto linksCreateDto)
+    public async Task<LinksDto?> SaveLink(LinksCreateDto linksCreateDto, string claimsEmail, string claimsSub, string claimsIssuer)
     {
         _logger.LogInformation($"SaveLink : {linksCreateDto.Name}");
         
-        // TODO => must be from claims token
-        string sub = "123";
+        string sub = claimsSub;
 
         using (var session = await _db.GetClient().StartSessionAsync()) {
-
-
-                // TODO
 
             // Not working locally with basic docker mongoDB !
             //session.StartTransaction();
@@ -110,12 +106,14 @@ public class LinkService : ILinkService
 
                 await _linkCollection.InsertOneAsync(new Link {
                     Name = linksCreateDto.Name,
-                    GoogleOAuth2Sub = sub,
+                    Sub = sub,
                     Iban = linksCreateDto.Iban,
                     PaymentUrl = paymentLink.Url,
                     StripeLinkId = paymentLink.Id,
                     StripeProductId = product.Id,
-                    StripePriceId = price.Id
+                    StripePriceId = price.Id,
+                    Email = claimsEmail,
+                    ProviderIssuer = claimsIssuer,
                 });
 
                 
@@ -125,12 +123,14 @@ public class LinkService : ILinkService
                 return new LinksDto {
                     Id = justCreated.Id!.ToString(),
                     Name = linksCreateDto.Name,
-                    GoogleOAuth2Sub = sub,
+                    Sub = sub,
                     Iban = linksCreateDto.Iban,
                     PaymentUrl = paymentLink.Url,
                     StripeProductId = product.Id,
                     StripeLinkId = paymentLink.Id,
-                    StripePriceId = price.Id
+                    StripePriceId = price.Id,
+                    Email = claimsEmail,
+                    ProviderIssuer = claimsIssuer
                 };
                 
             } catch ( Exception e ) {
@@ -158,7 +158,7 @@ public class LinkService : ILinkService
             throw new ArgumentException("sub is empty");
         }
 
-        var filter = Builders<Link>.Filter.Eq(l => l.GoogleOAuth2Sub, sub);
+        var filter = Builders<Link>.Filter.Eq(l => l.Sub, sub);
 
         return await _linkCollection
             .Find(filter)

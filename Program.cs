@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Selflink_api.Db;
 using Selflink_api.Services;
@@ -51,6 +53,38 @@ builder.Services.AddSwaggerGen();
 // background service for stripe webhook & consumer
 builder.Services.AddHostedService<StripeWebHookHostedService>();
 
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer("Google", options =>
+    {
+        options.Authority = "https://accounts.google.com";
+        options.Audience = "114480973126-npvvh928tpq60jhngerft26ebvbsksbi.apps.googleusercontent.com"; 
+    });
+    // If want to add another provider support
+    //.AddJwtBearer("XXX", options => ...)
+
+builder.Services.AddAuthorization(options =>
+{   
+    //Override default authorization since we have multiple provider !
+        options.DefaultPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes("Google") // If want to add another provider support .AddAuthenticationSchemes("Google", "XXX")
+            .Build();
+
+        // add granular policies
+        //   options.AddPolicy("GoogleAdministrators", new AuthorizationPolicyBuilder()
+        // .RequireAuthenticatedUser()
+        // .AddAuthenticationSchemes("Google")
+        // .RequireClaim("role", "admin")
+        // .Build());
+
+        //   options.AddPolicy("XXXUser", new AuthorizationPolicyBuilder()
+        // .RequireAuthenticatedUser()
+        // .AddAuthenticationSchemes("Google")
+        // .RequireClaim("role", "user")
+        // .Build());
+});
+
 
 if ( Environment.GetEnvironmentVariable("LOAD_DATABASE") != null && Environment.GetEnvironmentVariable("LOAD_DATABASE") == "true") {
         // Load database 
@@ -76,6 +110,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

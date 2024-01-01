@@ -32,6 +32,7 @@ namespace Selflink_api.Dto
 
         [Required, NotNull]
         public string Currency {get; set;}
+        
 
     }
 }

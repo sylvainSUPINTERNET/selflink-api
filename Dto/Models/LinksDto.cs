@@ -10,7 +10,7 @@ namespace Selflink_api.Dto
         public string Id { get; set; }
         public string Name { get; set; }
 
-        public string GoogleOAuth2Sub { get; set; }
+        public string Sub { get; set; }
 
         public string Iban { get; set; }
 
@@ -21,6 +21,10 @@ namespace Selflink_api.Dto
         public string StripeProductId { get; set; }
 
         public string StripePriceId { get; set; }
+        
+        public string Email {get;set;}
+
+        public string ProviderIssuer { get; set; }
 
     }
 }

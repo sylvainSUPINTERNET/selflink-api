@@ -22,8 +22,8 @@ namespace Selflink_api.Db.Models
 
 
         // represent the user id in the token
-        [BsonElement("googleOAuth2Sub")]
-        public string GoogleOAuth2Sub { get; set;} // when user is logged in with OAuth2 google, this value is filled
+        [BsonElement("sub")]
+        public string Sub { get; set;} // when user is logged in with OAuth2 google, this value is filled
 
         [BsonElement("iban")]
         public string Iban { get; set; }
@@ -40,6 +40,12 @@ namespace Selflink_api.Db.Models
 
         [BsonElement("stripePriceId")]
         public string StripePriceId { get; set; }
+
+        [BsonElement("email")]
+        public string Email { get; set; }
+
+        [BsonElement("providerIssuer")]
+        public string ProviderIssuer { get; set; }
 
         public Link () 
         {
