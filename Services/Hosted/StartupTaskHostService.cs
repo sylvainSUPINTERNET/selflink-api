@@ -37,7 +37,7 @@ internal class StartupTaskHostService: IHostedService
         var sub = "114706333881848131803";
         var productIdTest = "prod_test";
 
-        var linkId = "link_test";
+        var linkId = "plink_1OUdBdG9WAND04yWR6ryqM9D";
 
         List<Link> links = [];
         for (int i = 0; i < 5; i++)
@@ -54,7 +54,8 @@ internal class StartupTaskHostService: IHostedService
                 StripeLinkId = linkId,
                 Email = "test@test.com",
                 ProviderIssuer = "https://accounts.google.com",
-                LinkUrl = "https://buy.stripe.com/test_00g5kH3p944U0Ew01S"
+                LinkUrl = "https://buy.stripe.com/test_00g5kH3p944U0Ew01S",
+                StripeStatusActive = true
             };
             links.Add(link);
         }

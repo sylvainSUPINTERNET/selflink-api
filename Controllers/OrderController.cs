@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Selflink_api.Db.Models;
 using Selflink_api.Dto;
@@ -8,6 +9,7 @@ namespace Selflink_api.Controllers;
 
     [ApiController]
     [Route("api/orders")]
+    [Authorize]
     public class OrderController: ControllerBase
     {
 

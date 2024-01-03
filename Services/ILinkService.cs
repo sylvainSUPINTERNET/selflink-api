@@ -8,5 +8,7 @@ namespace Selflink_api.Services
         public Task<LinksDto?> SaveLink(LinksCreateDto linksCreateDto, string claimsEmail, string claimsSub, string claimsIssuer);
 
         public Task<List<Link>> GetLinksAsync(string sub);
+
+        public Task<bool> DeactivateLinkAsync(string paymentLinkId, string sub);
     }
 }

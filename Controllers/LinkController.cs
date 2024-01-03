@@ -89,6 +89,24 @@ public class LinkController : ControllerBase
         }
     }
 
+    [HttpPost("deactivate", Name="DeactivateLink")]
+    public async Task<ActionResult<bool>> DeactivateLinkAsync(LinksDeactivateDto linksDeactivateDto)
+    {
+
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if ( userId == null) 
+        {   
+            _logger.LogError("userId is null");
+            return BadRequest();
+        }
+    
+        try {
+            await linkService.DeactivateLinkAsync(linksDeactivateDto.PaymentLinkId, userId);
+            return Ok();
+        } catch ( Exception e ) {
+            return BadRequest(e.Message);
+        }
+    }
 
 
 }

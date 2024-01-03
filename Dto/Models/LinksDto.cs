@@ -28,5 +28,7 @@ namespace Selflink_api.Dto
 
         public string LinkUrl { get; set; }
 
+        public bool StripeStatusActive { get; set; }
+
     }
 }

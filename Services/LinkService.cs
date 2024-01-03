@@ -132,7 +132,8 @@ public class LinkService : ILinkService
                     StripePriceId = price.Id,
                     Email = claimsEmail,
                     ProviderIssuer = claimsIssuer,
-                    LinkUrl = paymentLink.Url
+                    LinkUrl = paymentLink.Url,
+                    StripeStatusActive = true
                 };
                 
             } catch ( Exception e ) {
@@ -149,9 +150,6 @@ public class LinkService : ILinkService
 
     }
     
-
-
-
     public async Task<List<Link>> GetLinksAsync(string sub)
     {
         _logger.LogInformation($"GetLinks : {sub}");
@@ -168,4 +166,37 @@ public class LinkService : ILinkService
             .ToListAsync();
     }
 
+    public Task<bool> DeactivateLinkAsync(string paymentLinkId, string sub)
+    {
+        _logger.LogInformation($"DeactivateLink : {paymentLinkId}");
+
+        if (string.IsNullOrEmpty(paymentLinkId)) {
+            throw new ArgumentException("paymentLinkId is empty");
+        }
+
+        if (string.IsNullOrEmpty(sub)) {
+            throw new ArgumentException("sub is empty");
+        }
+
+
+
+       var result = _linkCollection.FindOneAndUpdate(l => l.StripeLinkId == paymentLinkId & l.Sub == sub, Builders<Link>.Update.Set(l => l.StripeStatusActive, false));
+
+        Console.WriteLine(result);
+        if ( result == null ) {
+            throw new Exception("Can't find link for the sub");
+        }
+
+        
+        var options = new PaymentLinkUpdateOptions
+        {
+            Active = false
+        };
+        var service = new PaymentLinkService();
+        service.Update(paymentLinkId, options);
+
+
+
+        return Task.FromResult(true);
+    }
 }

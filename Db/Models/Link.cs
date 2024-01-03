@@ -51,6 +51,9 @@ namespace Selflink_api.Db.Models
         [BsonElement("linkUrl")]
         public string LinkUrl { get; set; }
 
+        [BsonElement("stripeStatus")]
+        public bool StripeStatusActive { get; set; }
+
         public Link () 
         {
             CreatedAt = DateTime.UtcNow;
