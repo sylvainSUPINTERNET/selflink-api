@@ -26,5 +26,7 @@ namespace Selflink_api.Dto
 
         public string ProviderIssuer { get; set; }
 
+        public string LinkUrl { get; set; }
+
     }
 }

@@ -47,6 +47,10 @@ namespace Selflink_api.Db.Models
         [BsonElement("providerIssuer")]
         public string ProviderIssuer { get; set; }
 
+
+        [BsonElement("linkUrl")]
+        public string LinkUrl { get; set; }
+
         public Link () 
         {
             CreatedAt = DateTime.UtcNow;

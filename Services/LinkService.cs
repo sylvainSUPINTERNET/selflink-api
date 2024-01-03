@@ -114,6 +114,7 @@ public class LinkService : ILinkService
                     StripePriceId = price.Id,
                     Email = claimsEmail,
                     ProviderIssuer = claimsIssuer,
+                    LinkUrl = paymentLink.Url
                 });
 
                 
@@ -130,7 +131,8 @@ public class LinkService : ILinkService
                     StripeLinkId = paymentLink.Id,
                     StripePriceId = price.Id,
                     Email = claimsEmail,
-                    ProviderIssuer = claimsIssuer
+                    ProviderIssuer = claimsIssuer,
+                    LinkUrl = paymentLink.Url
                 };
                 
             } catch ( Exception e ) {

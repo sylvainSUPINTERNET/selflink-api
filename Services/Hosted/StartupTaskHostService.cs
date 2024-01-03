@@ -54,6 +54,7 @@ internal class StartupTaskHostService: IHostedService
                 StripeLinkId = linkId,
                 Email = "test@test.com",
                 ProviderIssuer = "https://accounts.google.com",
+                LinkUrl = "https://buy.stripe.com/test_00g5kH3p944U0Ew01S"
             };
             links.Add(link);
         }
