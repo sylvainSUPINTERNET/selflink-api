@@ -51,7 +51,7 @@ namespace Selflink_api.Db.Models
         [BsonElement("linkUrl")]
         public string LinkUrl { get; set; }
 
-        [BsonElement("stripeStatus")]
+        [BsonElement("stripeStatusActive")]
         public bool StripeStatusActive { get; set; }
 
         public Link () 
