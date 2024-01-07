@@ -45,15 +45,16 @@ public class LinkService : ILinkService
                         Images = linksCreateDto.ProductImage,
                         Metadata = new Dictionary<string, string>
                         {
-                            { "price", $"{(long)Convert.ToDouble(linksCreateDto.PriceUnit)}" },
+                            { "price", $"{ConvertToFormatPrice(linksCreateDto.PriceUnit)}" },
                             { "currency", linksCreateDto.Currency.ToLower() },
                         },
                     };
+                    
                 Stripe.Product product = new Stripe.ProductService().Create(StripeOptionsProductCreate);
             
                 var StripeOptionsPriceCreate = new Stripe.PriceCreateOptions
                     {
-                        UnitAmount = (long)Convert.ToDouble(linksCreateDto.PriceUnit),
+                        UnitAmount = ConvertToFormatPrice(linksCreateDto.PriceUnit),
                         Currency = product.Metadata["currency"],
                         Product = product.Id,
                     };
@@ -114,7 +115,8 @@ public class LinkService : ILinkService
                     StripePriceId = price.Id,
                     Email = claimsEmail,
                     ProviderIssuer = claimsIssuer,
-                    LinkUrl = paymentLink.Url
+                    LinkUrl = paymentLink.Url,
+                    StripeStatusActive = true
                 });
 
                 
@@ -198,5 +200,10 @@ public class LinkService : ILinkService
 
 
         return Task.FromResult(true);
+    }
+    
+    public long ConvertToFormatPrice(string price) {
+        double priceDouble = Convert.ToDouble(price);
+        return (long)(priceDouble * 100); // Convertit 10.05 en 1005
     }
 }
