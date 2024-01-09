@@ -51,7 +51,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // background service for stripe webhook & consumer
-builder.Services.AddHostedService<StripeWebHookHostedService>();
+// builder.Services.AddHostedService<StripeWebHookHostedService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
